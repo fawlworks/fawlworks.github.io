@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portafolio Online 2026 | Juan Luis Valverde Salgueiro</title>
+    
+     <!-- NUEVO: LÍNEA PARA EL ICONITO (FAVICON) -->
+    <!-- Puedes usar la misma URL de tu foto de perfil o cualquier otra imagen que tengas -->
+    <link rel="icon" type="image/png" href="https://unidad-dsentimientos.es/imagenes/win95.png">
+
+    <!-- 1. Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- 2. Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 3. Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 4. Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // Mapeamos las antiguas fuentes a Space Mono para no romper tu HTML
+                        'marker': ['"Space Mono"', 'monospace'], 
+                        'hand': ['"Space Mono"', 'monospace'],   
+                        'sans': ['Inter', 'sans-serif'],
+                        'mono': ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        'paper': '#fdfbf7', 
+                        'neon-rose': '#f43f5e',
+                        'neon-blue': '#3b82f6',
+                        'neon-green': '#22c55e',
+                        'neon-purple': '#a855f7',
+                        'win-gray': '#e0e0e0',
+                    },
+                    boxShadow: {
+                        'brutal': '6px 6px 0px 0px rgba(0,0,0,1)',
+                        'paper': '0 10px 30px rgba(0,0,0,0.2)',
+                    },
+                    backgroundImage: {
+                        'paper-texture': "url('https://www.transparenttextures.com/patterns/notebook.png')",
+                        'urban-wall': "url('https://www.transparenttextures.com/patterns/dark-brick-wall.png')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        body {
+            background-color: #1a1a1a;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-brick-wall.png');
+            background-blend-mode: multiply;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            cursor: default;
+        }
+
+        /* --- VENTANAS (Windows) --- */
+        .window-frame {
+            position: absolute;
+            background: #f0f0f0;
+            border: 2px solid #000;
+            box-shadow: 15px 15px 0px rgba(0,0,0,0.4);
+            width: 480px; 
+            max-width: 90vw;
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: border-color 0.2s;
+        }
+
+        .window-frame.large-window {
+            width: 600px;
+            height: 780px; 
+            max-height: 85vh;
+        }
+
+        .window-frame.active {
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.6);
+            z-index: 100;
+            border-color: #000;
+        }
+
+        .window-header {
+            background: #000;
+            color: #fff;
+            padding: 8px 12px;
+            cursor: grab;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Space Mono', monospace;
+            font-weight: bold;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #000;
+        }
+        .window-header:active { cursor: grabbing; }
+
+        .window-content {
+            padding: 0;
+            overflow: hidden;
+            background: #fff;
+            background-image: url("https://www.transparenttextures.com/patterns/graphy.png");
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ventana estática: sin scroll para diseño gráfico */
+        .large-window .window-content {
+            overflow: hidden; 
+            max-height: none; 
+        }
+
+        /* --- CARTEL PRINCIPAL --- */
+        #main-poster {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-1deg) scale(0.8); 
+            width: 600px;
+            max-width: 95vw; 
+            max-height: 95vh;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.1); 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- PESTAÑAS (Tabs) --- */
+        .tear-tab-container {
+            border-top: 3px dotted #bbb;
+            margin-top: auto;
+            padding-top: 4px;
+        }
+
+        .tear-tab {
+            transition: transform 0.2s ease-out, background-color 0.2s;
+            transform-origin: top center;
+            cursor: pointer;
+            background-color: #fdfbf7;
+            background-image: url("https://www.transparenttextures.com/patterns/notebook.png");
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px dashed #ccc;
+            box-shadow: inset 0 -2px 5px rgba(0,0,0,0.05);
+            pointer-events: auto;
+        }
+        .tear-tab:hover {
+            transform: translateY(6px);
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .tearing {
+            animation: tearDown 0.6s forwards ease-in;
+            pointer-events: none !important;
+            z-index: 50;
+        }
+
+        @keyframes tearDown {
+            0% { transform: translateY(0) rotate(0); border-top: none; }
+            20% { transform: translateY(30px) rotate(5deg); opacity: 0.9;}
+            100% { transform: translateY(800px) rotate(25deg) translateX(100px); opacity: 0; }
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #eee; border-left: 1px solid #000; }
+        ::-webkit-scrollbar-thumb { background: #000; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
+
+        /* Utiles de Textura */
+        .tape {
+            background-color: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(1px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Estilos para los elementos flotantes */
+        .cork-item {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .cork-item:hover {
+            transform: scale(1.1) rotate(0deg) !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+            z-index: 50;
+        }
+        .pin {
+            width: 12px;
+            height: 12px;
+            background: #d93025;
+            border-radius: 50%;
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- ÁREA DE ESCRITORIO -->
+    <div id="desktop" class="w-full h-full relative">
+        
+        <!-- Elementos de fondo -->
+        <div class="absolute top-6 left-6 font-mono text-xs text-gray-400 pointer-events-none opacity-50">
+            <p>OS: PORTAFOLIO_ONLINE_V2.17</p>
+            <p>USER: JUAN_LUIS_VALVERDE_SALGUEIRO</p>
+        </div>
+
+        <div class="absolute bottom-6 right-6 font-mono text-xs text-gray-400 text-right pointer-events-none opacity-50">
+            <p>PULSA LAS TIRAS PARA EXPLORAR</p>
+            <p>ARRANCA SIN MIEDO. SE REGENERAN A LA DERECHA</p>
+            <!-- CAMBIO: Añadido 'hidden md:block' para que solo se vea en escritorio -->
+            <p class="hidden md:block">ARRASTRA LAS VENTANAS PARA ORGANIZAR</p>
+        </div>
+
+        <!-- CONTENEDOR PRINCIPAL: Centrado y con altura máxima adaptable -->
+<div id="main-poster" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-[600px] z-10 flex flex-col max-h-[85dvh] md:max-h-[95vh]">
+    
+    <!-- 1. PAPEL BLANCO (Scrollable si es necesario) 
+         Añadido 'flex-1 min-h-0' para que ocupe el espacio disponible y haga scroll si se pasa.
+    -->
+    <div class="bg-paper paper-texture rounded-t-sm shadow-[0_10px_30px_rgba(0,0,0,0.3)] relative flex flex-col overflow-y-auto md:overflow-hidden no-scrollbar flex-1 min-h-0">
+        
+        <!-- Cintas (Tapes) -->
+        <div class="tape absolute -top-4 left-8 w-24 h-8 -rotate-3 z-20"></div>
+        <div class="tape absolute -top-4 right-8 w-24 h-8 rotate-2 z-20"></div>
+        <div class="tape absolute bottom-20 -left-4 w-8 h-20 rotate-3 z-20"></div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="px-4 pt-4 md:px-8 md:pt-6 pb-2 relative flex-grow">
+            
+            <!-- PEGATINA OPEN TO WORK -->
+            <div class="absolute top-2 right-2 md:top-10 md:right-6 w-20 h-20 md:w-28 md:h-28 bg-neon-rose rounded-full flex items-center justify-center text-white font-marker rotate-12 shadow-md z-10 animate-pulse border-4 border-double border-white">
+                <span class="text-center text-[10px] md:text-sm leading-none transform -rotate-12 uppercase">Open<br>to<br>Work</span>
+            </div>
+
+            <!-- TEXTOS -->
+            <div class="text-center space-y-2 md:space-y-3">
+                <div class="inline-block bg-black text-white px-3 py-1 text-[10px] md:text-xs font-black uppercase tracking-widest -rotate-2 border-2 border-white shadow-sm">
+                    JUAN LUIS VALVERDE SALGUEIRO
+                </div>
+                
+                <div>
+                    <h1 class="text-4xl md:text-6xl leading-[0.9] font-black font-sans uppercase tracking-tighter text-black mb-1 md:mb-2">
+                        DIRECTOR<br>DE ARTE
+                    </h1>
+                    <h2 class="text-lg md:text-2xl font-marker text-neon-rose rotate-[-2deg]">
+                        & Creative Content Creator
+                    </h2>
+                </div>
+                
+                <div class="w-16 h-1 bg-black mx-auto opacity-10 rounded-full"></div>
+
+                <div class="text-left p-4 md:p-6 relative border-l-4 border-black pl-4">
+                    <p class="font-hand font-bold text-xl md:text-2xl mb-2 md:mb-3 text-gray-900 leading-none">
+                        Busco el "porqué" y el "cómo" detrás de cada imagen.
+                    </p>
+                    <p class="font-sans text-xs md:text-sm leading-relaxed text-gray-700">
+                        <strong>Director de Arte con mentalidad de Arquitecto.</strong><br>
+                        Porque para mí el diseño no es decoración, es estructura.<br><br>
+                        <span class="font-bold bg-black text-white px-1">Mi enfoque:</span> Visual Storytelling + Datos.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- PIE DE PÁGINA: Mis Proyectos -->
+        <div class="text-center pt-2 pb-4 relative z-10 bg-paper paper-texture shrink-0">
+            <div class="inline-block">
+                <p class="font-marker text-lg md:text-xl text-black">MIS PROYECTOS</p>
+                <p class="font-hand text-xs text-gray-500 font-bold mb-1">(¡Coge lo que necesites!)</p>
+                <i data-lucide="arrow-down" class="w-4 h-4 mx-auto animate-bounce text-gray-400"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. PESTAÑAS (TABS) - AHORA SÍ INCLUIDAS
+         'shrink-0' asegura que no se aplasten si falta espacio.
+    -->
+    <div class="tear-tab-container flex justify-center items-start gap-1 px-1 md:px-2 pb-0 relative z-20 shrink-0">
+        
+        <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'graphic')">
+            <i data-lucide="palette" class="w-4 h-4 md:w-6 md:h-6 text-neon-rose"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">DISEÑO<br>GRÁFICO</span>
+        </div>
+
+         <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'branding')">
+            <i data-lucide="stamp" class="w-4 h-4 md:w-6 md:h-6 text-orange-500"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">BRAND<br>IDENTITY</span>
+        </div>
+
+        <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'campaign')">
+            <i data-lucide="video" class="w-4 h-4 md:w-6 md:h-6 text-neon-green"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">CAMPAÑAS<br>360º</span>
+        </div>
+
+        <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'ui')">
+            <i data-lucide="smartphone" class="w-4 h-4 md:w-6 md:h-6 text-blue-600"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">UX / UI<br>APPS</span>
+        </div>
+
+        <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'social')">
+            <i data-lucide="trending-up" class="w-4 h-4 md:w-6 md:h-6 text-purple-600"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">SOCIAL<br>MEDIA</span>
+        </div>
+
+        <div class="group relative w-full md:w-20 tear-tab h-20 md:h-28 flex flex-col items-center justify-center p-1 md:p-2 gap-1 md:gap-2" onclick="tearTab(this, 'contact')">
+            <i data-lucide="phone" class="w-4 h-4 md:w-6 md:h-6 text-black"></i>
+            <span class="font-mono font-bold text-[7px] md:text-[10px] tracking-widest uppercase text-gray-800 text-center leading-tight">CONTACTO<br>& CV</span>
+        </div>
+
+    </div>
+</div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        lucide.createIcons();
+
+        const CONTENT = {
+            graphic: {
+                title: "DISENO_GRAFICO.DIR",
+                isLarge: true,
+                html: `
+                    <!-- MÓVIL: Mantenemos 'pb-12' y configuración actual que ya funciona -->
+                    <div class="relative w-full h-full overflow-y-auto md:overflow-hidden p-6 md:p-8 flex flex-col items-center gap-8 md:block pb-12 md:pb-0">
+                        
+                        <!-- HEADER PIN BOARD -->
+                        <!-- CORRECCIÓN PC: Eliminado 'top-0'. Ajustado a 'md:top-6' para que recupere su posición original flotante -->
+                        <div class="relative md:absolute md:top-6 left-auto md:left-1/2 md:-translate-x-1/2 bg-white px-4 py-2 rotate-1 shadow-lg border border-gray-300 z-20 mb-4 md:mb-0">
+                            <h2 class="font-marker text-xl text-gray-800 uppercase tracking-widest">PIN BOARD</h2>
+                            <div class="pin bg-red-600"></div>
+                        </div>
+
+                        <!-- CARTEL 01 -->
+                        <a href="https://www.instagram.com/p/DGb2mWXi65L/?hl=es&img_index=1" target="_blank" class="cork-item relative md:absolute md:top-[75px] md:left-[35px] w-56 h-80 md:w-36 md:h-48 bg-gray-100 border-4 border-white shadow-xl -rotate-1 md:-rotate-2 shrink-0">
+                            <div class="pin"></div>
+                            <img src="img/cartel 01.png" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>CARTEL 01</span>'">
+                        </a>
+
+                        <!-- PORTADA 03 -->
+                        <a href="https://www.instagram.com/p/DDuUPrHCkpb/?hl=es&img_index=1" target="_blank" class="cork-item relative md:absolute md:top-[105px] md:left-[240px] w-48 h-48 md:w-32 md:h-32 bg-gray-100 border-2 border-black shadow-md rotate-2 shrink-0">
+                            <div class="pin bg-white"></div>
+                            <img src="img/portada 03.png" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>PORTADA 03</span>'">
+                        </a>
+
+                        <!-- CARTEL 02 -->
+                        <a href="https://www.instagram.com/p/DGifrA5CkKT/?hl=es" target="_blank" class="cork-item relative md:absolute md:top-[80px] md:left-[415px] w-56 h-80 md:w-36 md:h-48 bg-gray-100 border-4 border-white shadow-xl rotate-1 md:rotate-4 shrink-0">
+                            <div class="pin bg-yellow-500"></div>
+                            <img src="img/cartel 02.png" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>CARTEL 02</span>'">
+                        </a>
+
+                        <!-- FILA 2 -->
+                        <!-- PORTADA 02 -->
+                        <a href="https://www.instagram.com/p/DGvY45nCCP2/?hl=es&img_index=1" target="_blank" class="cork-item relative md:absolute md:top-[345px] md:left-[55px] w-48 h-48 md:w-32 md:h-32 bg-gray-100 border-2 border-black shadow-lg -rotate-2 md:-rotate-3 shrink-0">
+                            <div class="pin bg-white"></div>
+                            <img src="img/portada 02.png" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>PORTADA 02</span>'">
+                        </a>
+
+                        <!-- CARTEL 03 -->
+                        <a href="https://www.instagram.com/p/DMx9BYTiHpz/?hl=es&img_index=1" target="_blank" class="cork-item relative md:absolute md:top-[310px] md:left-[215px] w-64 h-80 md:w-40 md:h-56 bg-gray-100 border-2 border-white shadow-lg rotate-0 md:rotate-1 z-10 shrink-0">
+                            <div class="tape absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-4 bg-white/50 rotate-0"></div>
+                            <img src="img/cartel 03.jpg" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>CARTEL 03</span>'">
+                        </a>
+                        
+                        <!-- CARTEL 04 -->
+                        <a href="https://www.instagram.com/p/DUI4fyaApFN/?hl=es&img_index=1" target="_blank" class="cork-item relative md:absolute md:top-[330px] md:left-[415px] w-56 h-80 md:w-36 md:h-48 bg-gray-100 border-4 border-white shadow-xl -rotate-1 shrink-0">
+                            <div class="pin bg-black"></div>
+                            <img src="img/cartel 04.jpg" loading="lazy" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML+='<span class=\\'p-4 text-center font-bold text-xs flex h-full items-center justify-center\\'>CARTEL 04</span>'">
+                        </a>
+                        
+                        <!-- Espacio extra mínimo para móvil -->
+                        <div class="h-4 w-full md:hidden shrink-0"></div>
+                    </div>
+                `
+            },
+            branding: {
+                title: "BRANDING_IDENTITY.DIR",
+                html: `
+                    <div class="p-6 bg-orange-50 border-b-2 border-black relative">
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/notebook.png')"></div>
+                        <h2 class="font-marker text-2xl text-orange-600 relative z-10">Branding & Identidad</h2>
+                        <p class="font-hand text-sm mt-1 relative z-10">"Creando universos visuales coherentes."</p>
+                    </div>
+
+                    <div class="p-6 space-y-6 flex-grow">
+                        <a href="https://www.behance.net/gallery/237502619/Gondomar-CF-Social-Media-Rebrand" target="_blank" class="block bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#f97316] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#f97316] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-orange-100 text-orange-800 text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Social Branding</span>
+                                    <h3 class="font-black text-lg group-hover:text-orange-600 leading-tight">Gondomar CF Rebrand</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Rediseño completo de identidad para RRSS. Modernización de entidad deportiva.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <i data-lucide="shield" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="https://www.behance.net/gallery/236082905/EME30-IDENTIDAD-VISUAL-CARTELERIA-YMERCHANDISING" target="_blank" class="block bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#ea580c] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#ea580c] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-orange-100 text-orange-800 text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Event Branding</span>
+                                    <h3 class="font-black text-lg group-hover:text-orange-800 leading-tight">Festival EME30</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Sistema visual completo: Identidad, Cartelería y Merchandising.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <i data-lucide="ticket" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `
+            },
+            campaign: {
+                title: "CAMPANAS_360.DIR",
+                html: `
+                    <div class="p-6 bg-green-50 border-b-2 border-black relative">
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/notebook.png')"></div>
+                        <h2 class="font-marker text-2xl text-green-700 relative z-10">Campañas 360º</h2>
+                        <p class="font-hand text-sm mt-1 relative z-10">"Concepto, desarrollo y ejecución total."</p>
+                    </div>
+                    
+                    <div class="p-6 space-y-6 flex-grow">
+                        <a href="https://www.behance.net/gallery/236083437/CAMPANYA-Prohibit-NO-Jugar-Amb-Pilota-LAUS-2025" target="_blank" class="block bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#22c55e] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#22c55e] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-black text-white text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Laus 2025</span>
+                                    <h3 class="font-black text-lg group-hover:text-green-600 leading-tight">Prohibit Jugar amb Pilota</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Cartelería + Vídeo. Campaña conceptual para la Fundación FC Barcelona.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                        <path d="M12 2v4"></path>
+                                        <path d="M12 22v-4"></path>
+                                        <path d="M22 12h-4"></path>
+                                        <path d="M2 12h4"></path>
+                                        <path d="M19.07 4.93L16.24 7.76"></path>
+                                        <path d="M4.93 19.07l2.83-2.83"></path>
+                                        <path d="M19.07 19.07l-2.83-2.83"></path>
+                                        <path d="M4.93 4.93l2.83 2.83"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="https://www.behance.net/gallery/236085581/TFM-DIRECCION-DE-ARTE-COMO-AUTORIA-TOTAL" target="_blank" class="block bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#15803d] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#15803d] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-green-600 text-white text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Mención Honor</span>
+                                    <h3 class="font-black text-lg group-hover:text-green-800 leading-tight">Autoría Total: TFM</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Proyecto 360º real: Música, identidad visual y lanzamiento.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                     <i data-lucide="disc-3" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `
+            },
+            ui: {
+                title: "DISENO_UX_UI.APP",
+                html: `
+                    <div class="p-6 bg-blue-50 border-b-2 border-black relative">
+                         <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/notebook.png')"></div>
+                        <h2 class="font-marker text-2xl text-blue-600 relative z-10">DISEÑO UX/UI</h2>
+                        <p class="font-hand text-sm mt-1 relative z-10">"Arquitectura aplicada al entorno digital."</p>
+                    </div>
+                    
+                    <div class="p-6 space-y-6 flex-grow">
+                        <a href="https://www.behance.net/gallery/239635655/App-Gloomhaven-UX-Design-Case-Study" target="_blank" class="block border-2 border-black bg-white p-4 shadow-[4px_4px_0px_#2563eb] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#2563eb] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-blue-600 text-white text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Case Study</span>
+                                    <h3 class="font-black text-lg group-hover:text-blue-600">Gloomhaven App</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Frontend y lógica de UI para gestión de juegos de mesa.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <i data-lucide="sword" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+
+                        <a href="https://www.linkedin.com/posts/juanluis-valverde_uxuidesign-designthinking-figmadesign-activity-7386778426592030720-gKXP?utm_source=share&utm_medium=member_desktop&rcm=ACoAADLXOIIB0kCXthWPRNa84BvY7XZJ0xX-yC8" target="_blank" class="block border-2 border-black bg-white p-4 shadow-[4px_4px_0px_#9333ea] hover:scale-[1.03] hover:shadow-[6px_6px_0px_#9333ea] transition-all duration-200 group relative">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="bg-purple-600 text-white text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Concept</span>
+                                    <h3 class="font-black text-lg group-hover:text-purple-600">ZBE x MF Ghost</h3>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">Diseño UX/UI sobre zonas de bajas emisiones.</p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <i data-lucide="car-front" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `
+            },
+            social: {
+                title: "VIRAL_METRICS.LOG",
+                html: `
+                    <div class="p-6 bg-purple-50 border-b-2 border-black relative">
+                        <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/notebook.png')"></div>
+                        <h2 class="font-marker text-2xl text-purple-600 relative z-10">Social Media</h2>
+                        <p class="font-mono text-xs mt-1 text-gray-500 relative z-10 uppercase">Account: @azuquecafumar</p>
+                    </div>
+                    
+                    <div class="p-6 text-center flex-grow">
+                        <a href="https://www.instagram.com/azuquecafumar/?hl=es" target="_blank" class="block bg-black text-white p-6 mb-6 shadow-[6px_6px_0px_#a855f7] transform -rotate-2 border-2 border-white outline outline-2 outline-black hover:scale-[1.03] transition-transform group">
+                            <span class="block text-5xl font-mono font-bold text-purple-400 mb-1 group-hover:text-white transition-colors">1.8 M</span>
+                            <span class="block text-[10px] uppercase tracking-widest font-bold border-t border-gray-700 pt-2">Alcance Mensual Orgánico</span>
+                            <div class="mt-4 flex justify-center items-center gap-2 text-xs font-bold bg-white text-black py-1 px-3 rounded-full mx-auto w-fit">
+                                <i data-lucide="instagram" class="w-4 h-4"></i> VER PERFIL
+                            </div>
+                        </a>
+
+                        <a href="https://drive.google.com/file/d/1-u4EOeTlOiAt3oMeJigeR5pOfWV9Kc5_/view?usp=sharing" target="_blank" class="block text-left bg-white border-2 border-black p-4 shadow-[4px_4px_0px_#a855f7] relative group hover:scale-[1.03] hover:shadow-[6px_6px_0px_#a855f7] transition-all duration-200">
+                            <div class="flex justify-between items-start">
+                                 <div class="flex flex-col gap-1">
+                                    <span class="bg-purple-100 text-purple-800 text-[9px] px-2 py-1 font-bold font-mono w-fit uppercase">Mediakit PDF</span>
+                                    <h4 class="font-bold text-sm uppercase flex items-center gap-2 mt-1 group-hover:text-purple-600">
+                                        Viral Strategy
+                                    </h4>
+                                    <p class="text-xs text-gray-600 mt-1 max-w-[80%]">
+                                        Gestión de comunidad y estrategia de contenido viral local.
+                                    </p>
+                                </div>
+                                <div class="text-4xl absolute right-4 top-1/2 -translate-y-1/2 transform group-hover:scale-110 transition-transform">
+                                    <i data-lucide="file-down" class="w-10 h-10 text-black"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `
+            },
+           contact: {
+                title: "CONTACT_INFO.TXT",
+                html: `
+                    <!-- 1. Eliminado 'bg-white' para que se vea el fondo de cuadrícula (grid) de la ventana -->
+                    <div class="flex flex-col h-full w-full overflow-y-auto">
+                        
+                        <!-- Header: Reducido padding (p-6 -> p-4) para ganar espacio vertical -->
+                        <div class="p-4 bg-gray-100 border-b-2 border-black text-center relative shrink-0">
+                            <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/notebook.png')"></div>
+                            <div class="w-20 h-20 md:w-24 md:h-24 bg-white border-2 border-black rounded-full mx-auto mb-2 overflow-hidden shadow-md relative z-10">
+                                <img src="https://mir-s3-cdn-cf.behance.net/user/230/6b39351403958151.69975fa78ebd1.png" loading="lazy" class="w-full h-full object-cover">
+                            </div>
+                            <h2 class="font-marker text-xl md:text-2xl relative z-10">¿Hablamos?</h2>
+                        </div>
+                        
+                        <!-- Contenido: Reducido padding (p-6 -> p-4) para compactar -->
+                        <div class="p-4 md:p-6 text-center space-y-3 flex-grow">
+                            
+                            <!-- BOTÓN DESTACADO: CV -->
+                            <a href="CV_2026_JuanLuisValverde_ArtDirector.pdf" target="_blank" class="group bg-black text-white border-2 border-black p-3 hover:bg-gray-800 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_#f43f5e] flex flex-col items-center justify-center gap-1 w-full">
+                                <div class="flex items-center justify-center gap-2 font-bold text-sm">
+                                    <i data-lucide="file-down" class="w-5 h-5 text-neon-rose"></i> DESCARGAR MI CV
+                                </div>
+                                <span class="text-[10px] text-gray-400 uppercase tracking-widest">PDF ACTUALIZADO 2026</span>
+                            </a>
+
+                            <!-- Teléfono -->
+                            <div class="group bg-white border-2 border-black p-3 hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col gap-1 cursor-pointer w-full" onclick="navigator.clipboard.writeText('674553589'); alert('¡Teléfono copiado!')">
+                                <div class="flex items-center justify-center gap-2 font-bold text-sm group-hover:text-neon-blue transition-colors">
+                                    <i data-lucide="phone" class="w-4 h-4"></i> 674 553 589
+                                </div>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Click para copiar</span>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="group bg-white border-2 border-black p-3 hover:bg-gray-50 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)] flex flex-col gap-1 cursor-pointer w-full" onclick="navigator.clipboard.writeText('juan.valverde.salgueiro@gmail.com'); alert('¡Email copiado!')">
+                                <div class="flex items-center justify-center gap-2 font-bold text-sm break-all group-hover:text-neon-blue transition-colors">
+                                    <i data-lucide="mail" class="w-4 h-4"></i> juan.valverde.salgueiro@gmail.com
+                                </div>
+                                <span class="text-[10px] text-gray-500 uppercase tracking-widest">Click para copiar</span>
+                            </div>
+
+                            <!-- Redes Sociales -->
+                            <div class="grid grid-cols-3 gap-2 w-full">
+                                <a href="https://www.linkedin.com/in/juanluis-valverde/" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-blue-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                    <i data-lucide="linkedin" class="w-5 h-5 text-blue-700 group-hover:scale-110 transition-transform"></i> LINKEDIN
+                                </a>
+                                <a href="https://www.behance.net/estudiosventorrillo" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-blue-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                    <i data-lucide="external-link" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> BEHANCE
+                                </a>
+                                <a href="https://www.instagram.com/estudiosventorrillo/?hl=es" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-rose-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                    <i data-lucide="instagram" class="w-5 h-5 text-rose-600 group-hover:scale-110 transition-transform"></i> INSTAGRAM
+                                </a>
+                            </div>
+                            
+                            <!-- Espacio extra al final para asegurar scroll en móvil -->
+                            <div class="h-8 w-full md:hidden shrink-0"></div>
+                        </div>
+                    </div>
+                `
+            },
+        };
+
+        let zIndexCounter = 100;
+
+        function bringToFront(element) {
+            zIndexCounter++;
+            element.style.zIndex = zIndexCounter;
+            document.querySelectorAll('.window-frame').forEach(win => win.classList.remove('active'));
+            if(element.classList.contains('window-frame')) {
+                element.classList.add('active');
+            }
+        }
+
+        function makeDraggable(element, handle) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const dragHandle = handle || element;
+            dragHandle.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                bringToFront(element);
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
+
+        function tearTab(element, type) {
+            if(element.classList.contains('tearing')) return;
+
+            const parent = element.parentNode;
+            const clone = element.cloneNode(true);
+            
+            clone.classList.remove('tearing');
+            clone.style.pointerEvents = 'auto'; 
+            clone.style.opacity = '0'; 
+            clone.style.transform = 'translateY(-20px)';
+            
+            element.style.pointerEvents = 'none'; 
+            element.classList.add('tearing');
+            
+            setTimeout(() => {
+                spawnWindow(type);
+                element.remove(); 
+            }, 600); 
+
+            setTimeout(() => {
+                parent.appendChild(clone);
+                void clone.offsetWidth;
+                clone.style.opacity = '1';
+                clone.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    clone.style.transform = '';
+                }, 500);
+                lucide.createIcons();
+            }, 3000); 
+        }
+
+        function spawnWindow(type) {
+            const data = CONTENT[type];
+            if(!data) return;
+
+            const win = document.createElement('div');
+            const isLarge = data.isLarge ? ' large-window' : '';
+            win.className = 'window-frame active' + isLarge;
+            
+            const winWidth = data.isLarge ? 600 : 480;
+            const winHeight = data.isLarge ? 780 : 500;
+            
+            const minX = window.innerWidth * 0.05;
+            const maxX = window.innerWidth * 0.95 - winWidth;
+            const minY = window.innerHeight * 0.05;
+            const maxY = window.innerHeight * 0.95 - winHeight;
+
+            const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+            const randomY = data.isLarge ? minY : Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+            
+            win.style.left = `${Math.max(10, randomX)}px`;
+            win.style.top = `${Math.max(10, randomY)}px`;
+            
+            zIndexCounter++;
+            win.style.zIndex = zIndexCounter;
+
+            win.innerHTML = `
+                <div class="window-header">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="app-window" class="w-4 h-4"></i>
+                        <span>${data.title}</span>
+                    </div>
+                    <button class="hover:bg-red-600 hover:text-white px-2 border-l-2 border-black h-full flex items-center transition-colors" onclick="this.closest('.window-frame').remove()">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="window-content" onmousedown="bringToFront(this.closest('.window-frame'))">
+                    ${data.html}
+                </div>
+            `;
+
+            document.getElementById('desktop').appendChild(win);
+            lucide.createIcons();
+            
+            const header = win.querySelector('.window-header');
+            makeDraggable(win, header);
+        }
+    </script>
+</body>
+</html>
+
+
+
