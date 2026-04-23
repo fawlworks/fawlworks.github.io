@@ -229,7 +229,7 @@
         
         <!-- Elementos de fondo -->
         <div class="absolute top-6 left-6 font-mono text-xs text-gray-400 pointer-events-none opacity-50">
-            <p>OS: PORTAFOLIO_ONLINE_V2.17</p>
+            <p>OS: PORTAFOLIO_ONLINE_V4.23</p>
             <p>USER: JUAN_LUIS_VALVERDE_SALGUEIRO</p>
         </div>
 
@@ -606,15 +606,18 @@
                             </div>
 
                             <!-- Redes Sociales -->
-                            <div class="grid grid-cols-3 gap-2 w-full">
+                            <div class="grid grid-cols-4 gap-1 w-full">
+                                <a href="https://www.instagram.com/fawlworks/?hl=es" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-rose-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                    <i data-lucide="camera" class="w-5 h-5 text-rose-600 group-hover:scale-110 transition-transform"></i> INSTAGRAM
+                                </a>
                                 <a href="https://www.linkedin.com/in/juanluis-valverde/" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-blue-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
                                     <i data-lucide="briefcase-business" class="w-5 h-5 text-blue-700 group-hover:scale-110 transition-transform"></i> LINKEDIN
                                 </a>
                                 <a href="https://www.behance.net/fawlworks" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-blue-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
                                     <i data-lucide="external-link" class="w-5 h-5 group-hover:scale-110 transition-transform"></i> BEHANCE
                                 </a>
-                                <a href="https://www.instagram.com/fawlworks/?hl=es" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-rose-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-                                    <i data-lucide="camera" class="w-5 h-5 text-rose-600 group-hover:scale-110 transition-transform"></i> INSTAGRAM
+                                <a href="https://linktr.ee/fawlworks" target="_blank" class="group bg-white border-2 border-black p-2 hover:bg-green-50 font-bold text-[10px] flex flex-col items-center gap-1 transition-all duration-200 transform hover:scale-105 shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                    <i data-lucide="link" class="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform"></i> LINKTREE
                                 </a>
                             </div>
                             
@@ -708,20 +711,6 @@
             const isLarge = data.isLarge ? ' large-window' : '';
             win.className = 'window-frame active' + isLarge;
             
-            const winWidth = data.isLarge ? 600 : 480;
-            const winHeight = data.isLarge ? 780 : 500;
-            
-            const minX = window.innerWidth * 0.05;
-            const maxX = window.innerWidth * 0.95 - winWidth;
-            const minY = window.innerHeight * 0.05;
-            const maxY = window.innerHeight * 0.95 - winHeight;
-
-            const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
-            const randomY = data.isLarge ? minY : Math.floor(Math.random() * (maxY - minY + 1)) + minY;
-            
-            win.style.left = `${Math.max(10, randomX)}px`;
-            win.style.top = `${Math.max(10, randomY)}px`;
-            
             zIndexCounter++;
             win.style.zIndex = zIndexCounter;
 
@@ -740,7 +729,36 @@
                 </div>
             `;
 
+            // Insertamos primero en el DOM para poder obtener sus dimensiones reales
             document.getElementById('desktop').appendChild(win);
+            
+            // Lógica de posicionamiento
+            const isMobile = window.innerWidth < 768; // Tailwind breakpoint 'md'
+
+            if (isMobile) {
+                // En móvil centramos basados en el espacio de la ventana
+                const rect = win.getBoundingClientRect();
+                const finalX = (window.innerWidth - rect.width) / 2;
+                const finalY = (window.innerHeight - rect.height) / 2;
+                
+                win.style.left = `${Math.max(0, finalX)}px`;
+                win.style.top = `${Math.max(0, finalY)}px`;
+            } else {
+                // En PC mantenemos el formato aleatorio
+                const winWidth = data.isLarge ? 600 : 480;
+                const winHeight = data.isLarge ? 780 : 500;
+                const minX = window.innerWidth * 0.05;
+                const maxX = window.innerWidth * 0.95 - winWidth;
+                const minY = window.innerHeight * 0.05;
+                const maxY = window.innerHeight * 0.95 - winHeight;
+
+                const randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                const randomY = data.isLarge ? minY : Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+                
+                win.style.left = `${Math.max(10, randomX)}px`;
+                win.style.top = `${Math.max(10, randomY)}px`;
+            }
+
             lucide.createIcons();
             
             const header = win.querySelector('.window-header');
